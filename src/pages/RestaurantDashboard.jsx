@@ -1,575 +1,348 @@
+
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
+
+const initialDonations = [
+  { id: 1, foodName: 'Cooked Rice', quantity: '50', unit: 'kg', status: 'Available', date: 'Today' },
+  { id: 2, foodName: 'Vegetable Curry', quantity: '30', unit: 'kg', status: 'Requested', date: 'Yesterday' },
+  { id: 3, foodName: 'Bread & Pastries', quantity: '20', unit: 'kg', status: 'Accepted', date: 'Yesterday' },
+  { id: 4, foodName: 'Fresh Fruits', quantity: '25', unit: 'kg', status: 'Delivered', date: 'Earlier' },
+]
+
+const heroImage =
+  'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&q=85'
 
 function RestaurantDashboard() {
-    const restaurantName = 'Food Palace'
-  const [donations, setDonations] = useState([])
+  const [donations, setDonations] = useState(initialDonations)
+  const [showForm, setShowForm] = useState(false)
+  const [notice, setNotice] = useState('')
 
   const [formData, setFormData] = useState({
     foodName: '',
-    foodType: '',
+    foodType: 'Cooked Food',
     quantity: '',
-    unit: '',
+    unit: 'kg',
     preparedTime: '',
     expiryTime: '',
   })
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
+  const availableCount = donations.filter(
+    (item) => item.status === 'Available'
+  ).length
 
+  const totalQuantity = donations.reduce(
+    (sum, item) => sum + Number(item.quantity || 0),
+    0
+  )
+
+  const handleChange = (event) => {
     setFormData({
       ...formData,
-      [name]: value,
+      [event.target.name]: event.target.value,
     })
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  const handleSubmit = (event) => {
+    event.preventDefault()
 
     if (
-      !formData.foodName ||
-      !formData.foodType ||
+      !formData.foodName.trim() ||
       !formData.quantity ||
-      !formData.unit ||
+      Number(formData.quantity) <= 0 ||
       !formData.preparedTime ||
       !formData.expiryTime
     ) {
-      alert('Please fill all donation details.')
-      return
-    }
-
-    if (Number(formData.quantity) <= 0) {
-      alert('Quantity must be greater than 0.')
+      setNotice('Please complete all fields and enter a valid quantity.')
       return
     }
 
     if (
-      new Date(formData.expiryTime) <=
-      new Date(formData.preparedTime)
+      new Date(formData.expiryTime) <= new Date(formData.preparedTime)
     ) {
-      alert('Expiry time must be after prepared time.')
+      setNotice('Expiry time must be after the prepared time.')
       return
     }
 
     const newDonation = {
       id: Date.now(),
       ...formData,
+      quantity: String(formData.quantity),
       status: 'Available',
+      date: 'Just now',
     }
 
-    setDonations([newDonation, ...donations])
-
+    setDonations((previous) => [newDonation, ...previous])
     setFormData({
       foodName: '',
-      foodType: '',
+      foodType: 'Cooked Food',
       quantity: '',
-      unit: '',
+      unit: 'kg',
       preparedTime: '',
       expiryTime: '',
     })
-
-    alert('Food donation created successfully!')
+    setNotice('Donation added successfully to this demo dashboard.')
+    setShowForm(false)
   }
 
   return (
-    <div className="dashboard-page">
+    <div className="fc-dashboard-shell">
+      <aside className="fc-sidebar">
+        <Link to="/" className="fc-side-logo">
+          <span className="fc-side-logo-mark">F</span>
+          <span>FoodConnect</span>
+        </Link>
 
-        <div className="dashboard-topbar">
-  <div>
-    <span className="dashboard-label">RESTAURANT DASHBOARD</span>
-    <h1>Manage Your Food Donations</h1>
-    <p>
-      Add surplus food and track your donations from one place.
-    </p>
-  </div>
+        <div className="fc-side-section-label">WORKSPACE</div>
 
-  <div className="dashboard-role">
-    <span className="dashboard-role-icon">🏪</span>
-    <div>
-      <strong>Restaurant</strong>
-      <small>FoodConnect Partner</small>
-    </div>
-  </div>
-</div>
+        <nav className="fc-side-nav">
+          <Link to="/restaurant" className="fc-side-link active">
+            <span>▦</span> Dashboard
+          </Link>
+          <button
+            className="fc-side-link"
+            onClick={() => setShowForm(true)}
+          >
+            <span>＋</span> Add Donation
+          </button>
+          <a className="fc-side-link" href="#my-donations">
+            <span>▤</span> My Donations
+          </a>
+          <a className="fc-side-link" href="#my-donations">
+            <span>↗</span> Requests
+          </a>
+          <a className="fc-side-link" href="#restaurant-profile">
+            <span>◎</span> Profile
+          </a>
+        </nav>
 
-      {/* Header */}
-      <div className="dashboard-header">
-        <div>
-          <span className="dashboard-label">
-            RESTAURANT PORTAL
-          </span>
-
-          <h1>Restaurant Dashboard</h1>
-
-          <p>
-            Manage your surplus food donations and track their journey.
-          </p>
-        </div>
-
-        <button
-          className="dashboard-primary-button"
-          onClick={() =>
-            document
-              .getElementById('donation-form')
-              ?.scrollIntoView({ behavior: 'smooth' })
-          }
-        >
-          + Add Donation
-        </button>
-      </div>
-
-      {/* Stats */}
-      <div className="dashboard-stats">
-
-        <div className="dashboard-stat-card">
-          <div className="stat-icon">🍱</div>
-
-          <div>
-            <span>Total Donations</span>
-            <h2>{donations.length}</h2>
+        <div className="fc-sidebar-bottom">
+          <div className="fc-side-help">
+            <strong>Need help?</strong>
+            <p>Help us rescue more food, one donation at a time.</p>
+            <Link to="/about">Learn more →</Link>
           </div>
+          <button
+            className="fc-side-link"
+            onClick={() => {
+              localStorage.removeItem('foodconnectRole')
+              window.location.href = '/'
+            }}
+          >
+            <span>↪</span> Logout
+          </button>
         </div>
+      </aside>
 
-        <div className="dashboard-stat-card">
-          <div className="stat-icon">⏳</div>
-
+      <main className="fc-dashboard-main">
+        <header className="fc-dash-topbar">
           <div>
-            <span>Active Donations</span>
-            <h2>
-              {
-                donations.filter(
-                  (donation) => donation.status === 'Available'
-                ).length
-              }
-            </h2>
+            <span className="fc-eyebrow">RESTAURANT WORKSPACE</span>
+            <h1>Restaurant Dashboard</h1>
+            <p>Welcome back! Thank you for helping reduce food waste.</p>
           </div>
-        </div>
-
-        <div className="dashboard-stat-card">
-          <div className="stat-icon">❤️</div>
-
-          <div>
-            <span>People Served</span>
-            <h2>0</h2>
-          </div>
-        </div>
-
-        <div className="dashboard-stat-card">
-          <div className="stat-icon">♻️</div>
-
-          <div>
-            <span>Food Recovered</span>
-            <h2>0 kg</h2>
-          </div>
-        </div>
-
-      </div>
-
-      {/* Main Content */}
-      <div className="dashboard-grid">
-
-        {/* Donation Form */}
-        <div
-          className="dashboard-card donation-form-card"
-          id="donation-form"
-        >
-
-          <div className="card-heading">
+          <div className="fc-dash-user">
+            <span className="fc-user-avatar">R</span>
             <div>
-              <h2>Add Food Donation</h2>
-              <p>
-                List your surplus food for NGOs.
-              </p>
+              <strong>Restaurant Partner</strong>
+              <span>Food donor</span>
             </div>
           </div>
+        </header>
 
-          <form onSubmit={handleSubmit}>
-
-            <div className="dashboard-form-row">
-
-              <div className="dashboard-form-group">
-                <label>Food Name</label>
-
-                <input
-                  type="text"
-                  name="foodName"
-                  value={formData.foodName}
-                  onChange={handleChange}
-                  placeholder="e.g. Rice, Dal, Chapati"
-                />
-              </div>
-
-              <div className="dashboard-form-group">
-                <label>Food Type</label>
-
-                <select
-                  name="foodType"
-                  value={formData.foodType}
-                  onChange={handleChange}
-                >
-                  <option value="">
-                    Select food type
-                  </option>
-
-                  <option value="Cooked Food">
-                    Cooked Food
-                  </option>
-
-                  <option value="Raw Food">
-                    Raw Food
-                  </option>
-
-                  <option value="Packaged Food">
-                    Packaged Food
-                  </option>
-
-                  <option value="Bakery">
-                    Bakery
-                  </option>
-
-                  <option value="Other">
-                    Other
-                  </option>
-                </select>
-              </div>
-
-            </div>
-
-            <div className="dashboard-form-row">
-
-              <div className="dashboard-form-group">
-                <label>Quantity</label>
-
-                <input
-                  type="number"
-                  name="quantity"
-                  value={formData.quantity}
-                  onChange={handleChange}
-                  placeholder="Enter quantity"
-                  min="0"
-                  step="0.01"
-                />
-              </div>
-
-              <div className="dashboard-form-group">
-                <label>Unit</label>
-
-                <select
-                  name="unit"
-                  value={formData.unit}
-                  onChange={handleChange}
-                >
-                  <option value="">
-                    Select unit
-                  </option>
-
-                  <option value="kg">kg</option>
-                  <option value="grams">grams</option>
-                  <option value="packets">packets</option>
-                  <option value="plates">plates</option>
-                  <option value="litres">litres</option>
-                </select>
-              </div>
-
-            </div>
-
-            <div className="dashboard-form-row">
-
-              <div className="dashboard-form-group">
-                <label>Prepared Time</label>
-
-                <input
-                  type="datetime-local"
-                  name="preparedTime"
-                  value={formData.preparedTime}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="dashboard-form-group">
-                <label>Expiry Time</label>
-
-                <input
-                  type="datetime-local"
-                  name="expiryTime"
-                  value={formData.expiryTime}
-                  onChange={handleChange}
-                />
-              </div>
-
-            </div>
-
-            <button
-              type="submit"
-              className="dashboard-submit-button"
-            >
-              Create Donation →
+        {notice && (
+          <div className="fc-notice" role="status">
+            <span>{notice}</span>
+            <button onClick={() => setNotice('')} aria-label="Dismiss message">
+              ×
             </button>
+          </div>
+        )}
 
-          </form>
+        <section className="fc-dash-stats">
+          <article className="fc-dash-stat">
+            <span className="fc-stat-icon">▤</span>
+            <span className="fc-stat-label">Total Donations</span>
+            <strong>{donations.length + 8}</strong>
+            <span className="fc-stat-caption">Including demo history</span>
+          </article>
+          <article className="fc-dash-stat">
+            <span className="fc-stat-icon">♧</span>
+            <span className="fc-stat-label">Available Donations</span>
+            <strong>{availableCount}</strong>
+            <span className="fc-stat-caption">Ready for requests</span>
+          </article>
+          <article className="fc-dash-stat">
+            <span className="fc-stat-icon">↗</span>
+            <span className="fc-stat-label">Food Listed</span>
+            <strong>{totalQuantity} kg</strong>
+            <span className="fc-stat-caption">Demo quantity total</span>
+          </article>
+        </section>
 
-        </div>
-
-        {/* Recent Donations */}
-        <div className="dashboard-card">
-
-          <div className="card-heading">
-
+        <section className="fc-dash-panel" id="my-donations">
+          <div className="fc-panel-heading">
             <div>
+              <span className="fc-eyebrow">FOOD RESCUE</span>
               <h2>Recent Donations</h2>
-
-              <p>
-                Your latest food donations.
-              </p>
+              <p>Manage surplus food listed by your restaurant.</p>
             </div>
-
-            <button className="view-all-button">
-              View All
+            <button
+              className="fc-button fc-button-primary"
+              onClick={() => {
+                setNotice('')
+                setShowForm((value) => !value)
+              }}
+            >
+              {showForm ? 'Close Form' : '+ Add Donation'}
             </button>
-
           </div>
 
-          {donations.length === 0 ? (
+          {showForm && (
+            <form className="fc-donation-form" onSubmit={handleSubmit}>
+              <h3>Add a food donation</h3>
 
-            <div className="empty-state">
+              <div className="fc-form-grid">
+                <label>
+                  Food name
+                  <input
+                    name="foodName"
+                    value={formData.foodName}
+                    onChange={handleChange}
+                    placeholder="e.g. Vegetable Rice"
+                    required
+                  />
+                </label>
 
-              <div className="empty-icon">
-                🍱
+                <label>
+                  Food type
+                  <select
+                    name="foodType"
+                    value={formData.foodType}
+                    onChange={handleChange}
+                  >
+                    <option>Cooked Food</option>
+                    <option>Fruits & Vegetables</option>
+                    <option>Bread & Bakery</option>
+                    <option>Packaged Food</option>
+                    <option>Other</option>
+                  </select>
+                </label>
+
+                <label>
+                  Quantity
+                  <input
+                    name="quantity"
+                    type="number"
+                    min="0.1"
+                    step="0.1"
+                    value={formData.quantity}
+                    onChange={handleChange}
+                    placeholder="Enter quantity"
+                    required
+                  />
+                </label>
+
+                <label>
+                  Unit
+                  <select
+                    name="unit"
+                    value={formData.unit}
+                    onChange={handleChange}
+                  >
+                    <option value="kg">Kilograms (kg)</option>
+                    <option value="packets">Packets</option>
+                    <option value="portions">Meal portions</option>
+                    <option value="boxes">Boxes</option>
+                  </select>
+                </label>
+
+                <label>
+                  Prepared time
+                  <input
+                    name="preparedTime"
+                    type="datetime-local"
+                    value={formData.preparedTime}
+                    onChange={handleChange}
+                    required
+                  />
+                </label>
+
+                <label>
+                  Expiry time
+                  <input
+                    name="expiryTime"
+                    type="datetime-local"
+                    value={formData.expiryTime}
+                    onChange={handleChange}
+                    required
+                  />
+                </label>
               </div>
 
-              <h3>No donations yet</h3>
-
-              <p>
-                Your food donations will appear here once
-                you create your first donation.
-              </p>
-
-              <button
-                className="empty-button"
-                onClick={() =>
-                  document
-                    .getElementById('donation-form')
-                    ?.scrollIntoView({ behavior: 'smooth' })
-                }
-              >
-                + Add Your First Donation
+              <button className="fc-button fc-button-primary" type="submit">
+                Publish Donation
               </button>
-
-            </div>
-
-          ) : (
-
-            <div className="donation-list">
-
-              {donations.map((donation) => (
-
-                <div
-                  className="donation-item"
-                  key={donation.id}
-                >
-
-                  <div className="donation-item-icon">
-                    🍱
-                  </div>
-
-                  <div className="donation-item-info">
-
-                    <h3>{donation.foodName}</h3>
-
-                    <p>
-                      {donation.quantity} {donation.unit}
-                      {' • '}
-                      {donation.foodType}
-                    </p>
-
-                  </div>
-
-                  <span className="donation-status">
-                    {donation.status}
-                  </span>
-
-                </div>
-
-              ))}
-
-            </div>
-
+            </form>
           )}
 
-        </div>
-
-      </div>
-
-            {/* My Donations */}
-      <div className="dashboard-card my-donations-card">
-
-        <div className="card-heading">
-          <div>
-            <h2>My Donations</h2>
-            <p>Track all food donations from your restaurant.</p>
-          </div>
-
-          <span className="donation-count">
-            {donations.length} Donations
-          </span>
-        </div>
-
-        {donations.length === 0 ? (
-
-          <div className="my-donations-empty">
-            <div className="empty-icon">🍱</div>
-
-            <h3>No donations available</h3>
-
-            <p>
-              Create your first food donation to see it here.
-            </p>
-          </div>
-
-        ) : (
-
-          <div className="donations-table-wrapper">
-
-            <table className="donations-table">
-
+          <div className="fc-table-scroll">
+            <table className="fc-data-table">
               <thead>
                 <tr>
-                  <th>Food</th>
-                  <th>Type</th>
+                  <th>Food Item</th>
                   <th>Quantity</th>
-                  <th>Prepared</th>
-                  <th>Expires</th>
                   <th>Status</th>
+                  <th>Listed</th>
                 </tr>
               </thead>
-
               <tbody>
-
                 {donations.map((donation) => (
-
                   <tr key={donation.id}>
-
                     <td>
-                      <div className="table-food">
-                        <div className="table-food-icon">
-                          🍱
-                        </div>
-
-                        <strong>
-                          {donation.foodName}
-                        </strong>
-                      </div>
+                      <strong>{donation.foodName}</strong>
+                      <span className="fc-table-subtitle">
+                        {donation.foodType || 'Food donation'}
+                      </span>
                     </td>
-
                     <td>
-                      {donation.foodType}
+                      {donation.quantity} {donation.unit}
                     </td>
-
                     <td>
-                      <strong>
-                        {donation.quantity}
-                      </strong>{' '}
-                      {donation.unit}
-                    </td>
-
-                    <td>
-                      {new Date(
-                        donation.preparedTime
-                      ).toLocaleString()}
-                    </td>
-
-                    <td>
-                      {new Date(
-                        donation.expiryTime
-                      ).toLocaleString()}
-                    </td>
-
-                    <td>
-                      <span className="table-status">
+                      <span
+                        className={`fc-table-status fc-status-${donation.status.toLowerCase().replace(/\s+/g, '-')}`}
+                      >
                         {donation.status}
                       </span>
                     </td>
-
+                    <td>{donation.date}</td>
                   </tr>
-
                 ))}
-
               </tbody>
-
             </table>
-
           </div>
+        </section>
 
-        )}
-
-      </div>
-
-      {/* Donation Journey */}
-      <div className="dashboard-card journey-card">
-
-        <div className="card-heading">
-
+        <section className="fc-dashboard-photo">
+          <img src={heroImage} alt="Prepared food ready to be donated" loading="lazy" />
           <div>
-            <h2>Donation Journey</h2>
-
-            <p>
-              Track how your surplus food reaches people.
-            </p>
+            <span className="fc-eyebrow">EVERY MEAL MATTERS</span>
+            <h2>Good food should never go to waste.</h2>
+            <p>Your surplus can become someone's next meal.</p>
           </div>
+        </section>
 
-        </div>
+        <section className="fc-profile-panel" id="restaurant-profile">
+          <h2>Restaurant Profile</h2>
+          <p>
+            This is a frontend demo. Your restaurant account details will
+            appear here after backend integration.
+          </p>
+        </section>
 
-        <div className="journey">
-
-          <div className="journey-step active">
-            <div className="journey-number">
-              1
-            </div>
-
-            <h3>Donation</h3>
-
-            <p>Food listed</p>
-          </div>
-
-          <div className="journey-line"></div>
-
-          <div className="journey-step">
-            <div className="journey-number">
-              2
-            </div>
-
-            <h3>NGO Request</h3>
-
-            <p>NGO requests food</p>
-          </div>
-
-          <div className="journey-line"></div>
-
-          <div className="journey-step">
-            <div className="journey-number">
-              3
-            </div>
-
-            <h3>Pickup</h3>
-
-            <p>Volunteer collects</p>
-          </div>
-
-          <div className="journey-line"></div>
-
-          <div className="journey-step">
-            <div className="journey-number">
-              4
-            </div>
-
-            <h3>Distribution</h3>
-
-            <p>Food reaches people</p>
-          </div>
-
-        </div>
-
-      </div>
-
+        <footer className="fc-dash-footer">
+          FoodConnect · Rescue food. Reduce waste. Nourish communities.
+        </footer>
+      </main>
     </div>
   )
 }

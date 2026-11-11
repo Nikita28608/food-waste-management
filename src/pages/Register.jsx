@@ -1,432 +1,200 @@
+
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 function Register() {
-  const [role, setRole] = useState('')
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    city: '',
-    address: '',
-    vehicleType: '',
-    password: '',
-    confirmPassword: '',
-  })
-
   const navigate = useNavigate()
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
+  const [role, setRole] = useState('restaurant')
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [error, setError] = useState('')
 
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
+  const roleRoutes = {
+    restaurant: '/restaurant',
+    ngo: '/ngo',
+    volunteer: '/volunteer',
   }
 
-  const handleRegister = (e) => {
-    e.preventDefault()
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    setError('')
 
-    if (!role) {
-      alert('Please select your role.')
+    if (!name.trim() || !email.trim() || !password || !confirmPassword) {
+      setError('Please fill in all required fields.')
       return
     }
 
-    if (
-      !formData.name ||
-      !formData.phone ||
-      !formData.email ||
-      !formData.city ||
-      !formData.password ||
-      !formData.confirmPassword
-    ) {
-      alert('Please fill all required fields.')
+    if (password.length < 6) {
+      setError('Your password must contain at least 6 characters.')
       return
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match.')
+    if (password !== confirmPassword) {
+      setError('The passwords do not match. Please try again.')
       return
     }
 
-    if (role === 'volunteer' && !formData.vehicleType) {
-      alert('Please select your vehicle type.')
-      return
-    }
-
-    // Save the selected role for the frontend demo
+    // Demo only: this does not create or save a real user account.
     localStorage.setItem('foodconnectRole', role)
-
-    alert('Account created successfully!')
-
-    if (role === 'restaurant') {
-      navigate('/restaurant')
-    } else if (role === 'ngo') {
-      navigate('/ngo')
-    } else if (role === 'volunteer') {
-      navigate('/volunteer')
-    }
+    navigate(roleRoutes[role])
   }
 
   return (
-    <div className="auth-page">
+    <main className="fc-auth-page fc-register-page">
+      <section className="fc-auth-visual">
+        <Link to="/" className="fc-auth-brand">
+          <span className="fc-auth-brand-icon">FC</span>
+          FoodConnect
+        </Link>
 
-      <div className="auth-container">
-
-        {/* Left Side */}
-
-        <div className="auth-info">
-
-          <div className="auth-logo">
-            Food<span>Connect</span>
-          </div>
-
-          <span className="auth-label">
-            JOIN FOODCONNECT
+        <div className="fc-auth-visual-content">
+          <span className="fc-auth-eyebrow">
+            JOIN THE MOVEMENT
           </span>
 
-          <h1>
-            Be part of the
-            <br />
-            <span>food recovery</span>
-            movement.
-          </h1>
+          <h1>Small acts of sharing create a bigger impact.</h1>
 
           <p>
-            Whether you have surplus food, need food for your
-            community, or want to help transport donations,
-            there's a place for you on FoodConnect.
+            Become part of a community that connects surplus food
+            with people who need it. Together, we can reduce waste
+            and make a difference.
           </p>
-
-          <div className="auth-points">
-
-            <div>
-              <span>✓</span>
-              Reduce food waste
-            </div>
-
-            <div>
-              <span>✓</span>
-              Help local communities
-            </div>
-
-            <div>
-              <span>✓</span>
-              Track every donation
-            </div>
-
-          </div>
-
         </div>
 
+        <div className="fc-auth-visual-footer">
+          Every meal shared matters.
+        </div>
+      </section>
 
-        {/* Registration Card */}
+      <section className="fc-auth-form-section">
+        <div className="fc-auth-form-wrap fc-register-form-wrap">
+          <Link to="/" className="fc-auth-mobile-brand">
+            <span className="fc-auth-brand-icon">FC</span>
+            FoodConnect
+          </Link>
 
-        <div className="auth-card">
+          <span className="fc-auth-eyebrow">GET STARTED</span>
 
-          <div className="auth-card-heading">
+          <h2>Create your account</h2>
 
-            <h2>Create your account</h2>
+          <p className="fc-auth-subtitle">
+            Join FoodConnect as a food donor, NGO, or volunteer.
+          </p>
 
-            <p>
-              Join FoodConnect in a few simple steps.
-            </p>
-
-          </div>
-
-
-          {/* Role Selection */}
-
-          <div className="form-group">
-
-            <label>
-              I want to join as
+          <form
+            className="fc-auth-form fc-register-form"
+            onSubmit={handleSubmit}
+          >
+            <label htmlFor="register-role">
+              I want to join as *
             </label>
 
-            <div className="role-options">
-
-              <button
-                type="button"
-                className={
-                  role === 'restaurant'
-                    ? 'role-option active'
-                    : 'role-option'
-                }
-                onClick={() => setRole('restaurant')}
-              >
-                <span>🏪</span>
-
-                <strong>
-                  Restaurant
-                </strong>
-
-                <small>
-                  Donate surplus food
-                </small>
-              </button>
-
-
-              <button
-                type="button"
-                className={
-                  role === 'ngo'
-                    ? 'role-option active'
-                    : 'role-option'
-                }
-                onClick={() => setRole('ngo')}
-              >
-                <span>🤝</span>
-
-                <strong>
-                  NGO
-                </strong>
-
-                <small>
-                  Request food donations
-                </small>
-              </button>
-
-
-              <button
-                type="button"
-                className={
-                  role === 'volunteer'
-                    ? 'role-option active'
-                    : 'role-option'
-                }
-                onClick={() => setRole('volunteer')}
-              >
-                <span>🚚</span>
-
-                <strong>
-                  Volunteer
-                </strong>
-
-                <small>
-                  Pick up & deliver food
-                </small>
-              </button>
-
-            </div>
-
-          </div>
-
-
-          {/* Registration Form */}
-
-          <form onSubmit={handleRegister}>
-
-            <div className="form-row">
-
-              <div className="form-group">
-
-                <label>
-                  {role === 'restaurant'
-                    ? 'Restaurant Name'
-                    : role === 'ngo'
-                    ? 'NGO Name'
-                    : 'Full Name'}
-                </label>
-
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder={
-                    role === 'restaurant'
-                      ? 'Enter restaurant name'
-                      : role === 'ngo'
-                      ? 'Enter NGO name'
-                      : 'Enter your name'
-                  }
-                />
-
-              </div>
-
-
-              <div className="form-group">
-
-                <label>
-                  Phone
-                </label>
-
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="Enter phone number"
-                />
-
-              </div>
-
-            </div>
-
-
-            <div className="form-group">
-
-              <label>
-                Email Address
-              </label>
-
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Enter your email"
-              />
-
-            </div>
-
-
-            <div className="form-group">
-
-              <label>
-                City
-              </label>
-
-              <input
-                type="text"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                placeholder="Enter your city"
-              />
-
-            </div>
-
-
-            {/* Address */}
-
-            {role !== 'volunteer' && (
-
-              <div className="form-group">
-
-                <label>
-                  Address
-                </label>
-
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  placeholder="Enter your address"
-                />
-
-              </div>
-
-            )}
-
-
-            {/* Volunteer Vehicle */}
-
-            {role === 'volunteer' && (
-
-              <div className="form-group">
-
-                <label>
-                  Vehicle Type
-                </label>
-
-                <select
-                  name="vehicleType"
-                  value={formData.vehicleType}
-                  onChange={handleChange}
-                >
-                  <option value="">
-                    Select vehicle
-                  </option>
-
-                  <option value="Bike">
-                    Bike
-                  </option>
-
-                  <option value="Car">
-                    Car
-                  </option>
-
-                  <option value="Van">
-                    Van
-                  </option>
-
-                  <option value="Other">
-                    Other
-                  </option>
-                </select>
-
-              </div>
-
-            )}
-
-
-            <div className="form-row">
-
-              <div className="form-group">
-
-                <label>
-                  Password
-                </label>
-
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Create password"
-                />
-
-              </div>
-
-
-              <div className="form-group">
-
-                <label>
-                  Confirm Password
-                </label>
-
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  placeholder="Confirm password"
-                />
-
-              </div>
-
-            </div>
-
-
-            <button
-              type="submit"
-              className="auth-submit"
-              disabled={!role}
+            <select
+              id="register-role"
+              value={role}
+              onChange={(event) => setRole(event.target.value)}
+              required
             >
+              <option value="restaurant">
+                Restaurant / Food Donor
+              </option>
+              <option value="ngo">NGO / Charity</option>
+              <option value="volunteer">Volunteer</option>
+            </select>
+
+            <label htmlFor="register-name">Full name / Organisation name *</label>
+
+            <input
+              id="register-name"
+              type="text"
+              placeholder="Enter your name"
+              autoComplete="name"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              required
+            />
+
+            <label htmlFor="register-email">Email address *</label>
+
+            <input
+              id="register-email"
+              type="email"
+              placeholder="you@example.com"
+              autoComplete="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+            />
+
+            <label htmlFor="register-phone">
+              Phone number <span className="fc-register-optional">(optional)</span>
+            </label>
+
+            <input
+              id="register-phone"
+              type="tel"
+              placeholder="Enter your phone number"
+              autoComplete="tel"
+              value={phone}
+              onChange={(event) => setPhone(event.target.value)}
+            />
+
+            <label htmlFor="register-password">Create password *</label>
+
+            <input
+              id="register-password"
+              type="password"
+              placeholder="At least 6 characters"
+              autoComplete="new-password"
+              minLength={6}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+            />
+
+            <label htmlFor="register-confirm-password">
+              Confirm password *
+            </label>
+
+            <input
+              id="register-confirm-password"
+              type="password"
+              placeholder="Enter your password again"
+              autoComplete="new-password"
+              value={confirmPassword}
+              onChange={(event) =>
+                setConfirmPassword(event.target.value)
+              }
+              required
+            />
+
+            {error && (
+              <p className="fc-auth-error" role="alert">
+                {error}
+              </p>
+            )}
+
+            <button className="fc-auth-submit" type="submit">
               Create Account →
             </button>
-
           </form>
 
-
-          <p className="auth-switch">
-
-            Already have an account?{' '}
-
-            <a href="/login">
-              Login
-            </a>
-
+          <p className="fc-auth-switch">
+            Already have an account? <Link to="/login">Log in</Link>
           </p>
 
+          <p className="fc-auth-demo-note">
+            College project demo: this form does not save your
+            details or create a real account. Do not enter a
+            password you use for another service.
+          </p>
         </div>
-
-      </div>
-
-    </div>
+      </section>
+    </main>
   )
 }
 

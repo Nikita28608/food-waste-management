@@ -1,76 +1,38 @@
-import { useEffect, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+
+import { Link, NavLink } from 'react-router-dom'
 
 function Navbar() {
-  const [role, setRole] = useState(null)
-
-  const location = useLocation()
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    const savedRole = localStorage.getItem('foodconnectRole')
-    setRole(savedRole)
-  }, [location])
-
-  const getDashboardPath = () => {
-    if (role === 'restaurant') return '/restaurant'
-    if (role === 'ngo') return '/ngo'
-    if (role === 'volunteer') return '/volunteer'
-    if (role === 'admin') return '/admin'
-
-    return '/'
-  }
-
-  const handleLogout = () => {
-    localStorage.removeItem('foodconnectRole')
-    setRole(null)
-    navigate('/')
-  }
-
   return (
-    <nav className="navbar">
+    <header className="fc-reference-navbar">
+      <nav className="fc-reference-nav" aria-label="Main navigation">
+        <Link to="/" className="fc-navbar-brand">
+          <img
+            src="/foodconnect-logo.png.png"
+            alt="FoodConnect "
+            className="fc-navbar-logo-image"
+          />
+</Link>
 
-      {/* Logo */}
-      <Link to="/" className="logo">
-        Food<span>Connect</span>
-      </Link>
+        <div className="fc-reference-links">
+          <Link to="/">Home</Link>
+          <NavLink to="/about">About Us</NavLink>
+          <a href="/#how-it-works">How It Works</a>
+          <Link to="/feedback">Feedback</Link>
+        </div>
 
-      {/* Main Navigation */}
-      <div className="nav-links">
-        <Link to="/">Home</Link>
-        <Link to="/about">About</Link>
-
-        {!role && (
-          <>
-            <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
-          </>
-        )}
-
-        {role && (
-          <Link to={getDashboardPath()}>
-            Dashboard
+        <div className="fc-reference-actions">
+          <Link to="/login" className="fc-reference-login">
+            Log In
           </Link>
-        )}
-      </div>
 
-      {/* Right Button */}
-      {!role ? (
-        <Link to="/register" className="nav-button">
-          Get Started
-        </Link>
-      ) : (
-        <button
-          type="button"
-          className="nav-logout"
-          onClick={handleLogout}
-        >
-          Logout
-        </button>
-      )}
-
-    </nav>
+          <Link to="/register" className="fc-reference-start">
+            Get Started
+          </Link>
+        </div>
+      </nav>
+    </header>
   )
 }
 
 export default Navbar
+

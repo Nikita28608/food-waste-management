@@ -1,50 +1,47 @@
+
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
+
+const availableFood = [
+  {
+    id: 1,
+    name: 'Fresh Vegetable Meals',
+    restaurant: 'Food Palace',
+    quantity: '20 kg',
+    location: 'MI Road, Jaipur',
+    expiry: 'Today, 8:00 PM',
+    type: 'Cooked Food',
+    image:
+      'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=80',
+  },
+  {
+    id: 2,
+    name: 'Fresh Dal',
+    restaurant: 'Spice Hub',
+    quantity: '10 kg',
+    location: 'Vaishali Nagar, Jaipur',
+    expiry: 'Today, 8:30 PM',
+    type: 'Cooked Food',
+    image:
+      'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=700&q=80',
+  },
+  {
+    id: 3,
+    name: 'Bread & Bakery Items',
+    restaurant: 'Royal Kitchen',
+    quantity: '50 packets',
+    location: 'Mansarovar, Jaipur',
+    expiry: 'Today, 9:00 PM',
+    type: 'Bakery',
+    image:
+      'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=700&q=80',
+  },
+]
 
 function NGODashboard() {
   const [requests, setRequests] = useState([])
-
-  const [availableFood] = useState([
-    {
-      id: 1,
-      foodName: 'Rice',
-      foodType: 'Cooked Food',
-      quantity: 20,
-      unit: 'kg',
-      restaurant: 'Food Palace',
-      location: 'Jaipur',
-      expiry: 'Today, 8:00 PM',
-    },
-    {
-      id: 2,
-      foodName: 'Dal',
-      foodType: 'Cooked Food',
-      quantity: 10,
-      unit: 'kg',
-      restaurant: 'Food Palace',
-      location: 'Jaipur',
-      expiry: 'Today, 8:00 PM',
-    },
-    {
-      id: 3,
-      foodName: 'Chapati',
-      foodType: 'Prepared Food',
-      quantity: 100,
-      unit: 'packets',
-      restaurant: 'Spice Hub',
-      location: 'Jaipur',
-      expiry: 'Today, 9:00 PM',
-    },
-    {
-      id: 4,
-      foodName: 'Vegetable Curry',
-      foodType: 'Cooked Food',
-      quantity: 15,
-      unit: 'kg',
-      restaurant: 'Royal Kitchen',
-      location: 'Jaipur',
-      expiry: 'Today, 8:30 PM',
-    },
-  ])
+  const [notice, setNotice] = useState('')
+  const [activeTab, setActiveTab] = useState('available')
 
   const handleRequest = (food) => {
     const alreadyRequested = requests.some(
@@ -52,447 +49,281 @@ function NGODashboard() {
     )
 
     if (alreadyRequested) {
-      alert('You have already requested this donation.')
+      setNotice(`You have already requested ${food.name}.`)
       return
     }
 
-    const newRequest = {
-      id: Date.now(),
-      foodId: food.id,
-      foodName: food.foodName,
-      quantity: food.quantity,
-      unit: food.unit,
-      restaurant: food.restaurant,
-      status: 'Pending',
-    }
+    setRequests((previous) => [
+      {
+        id: Date.now(),
+        foodId: food.id,
+        foodName: food.name,
+        restaurant: food.restaurant,
+        quantity: food.quantity,
+        status: 'Pending',
+      },
+      ...previous,
+    ])
 
-    setRequests([newRequest, ...requests])
-
-    alert(`Request sent for ${food.foodName}!`)
+    setNotice(`Request submitted for ${food.name}.`)
+    setActiveTab('requests')
   }
 
   return (
-    <div className="dashboard-page">
-        <div className="dashboard-topbar">
-  <div>
-    <span className="dashboard-label">NGO DASHBOARD</span>
+    <div className="fc-dashboard-shell">
+      <aside className="fc-sidebar">
+        <Link to="/" className="fc-side-logo">
+          <span className="fc-side-logo-mark">F</span>
+          <span>FoodConnect</span>
+        </Link>
 
-    <h1>Find Food & Serve Communities</h1>
+        <div className="fc-side-section-label">NGO WORKSPACE</div>
 
-    <p>
-      Discover available food donations and request what your
-      community needs.
-    </p>
-  </div>
+        <nav className="fc-side-nav">
+          <button
+            className={`fc-side-link ${activeTab === 'available' ? 'active' : ''}`}
+            onClick={() => setActiveTab('available')}
+          >
+            <span>▦</span> Available Food
+          </button>
 
-  <div className="dashboard-role">
-    <span className="dashboard-role-icon">🤝</span>
+          <button
+            className={`fc-side-link ${activeTab === 'requests' ? 'active' : ''}`}
+            onClick={() => setActiveTab('requests')}
+          >
+            <span>▤</span> My Requests
+          </button>
 
-    <div>
-      <strong>NGO</strong>
-      <small>FoodConnect Partner</small>
-    </div>
-  </div>
-</div>
+          <a className="fc-side-link" href="#ngo-impact">
+            <span>♡</span> Community Impact
+          </a>
 
-      {/* Header */}
+          <a className="fc-side-link" href="#ngo-profile">
+            <span>◎</span> NGO Profile
+          </a>
+        </nav>
 
-      <div className="dashboard-header">
-
-        <div>
-          <span className="dashboard-label">
-            NGO PORTAL
-          </span>
-
-          <h1>NGO Dashboard</h1>
-
-          <p>
-            Discover available food donations and request what
-            your community needs.
-          </p>
-        </div>
-
-        <button
-          className="dashboard-primary-button"
-          onClick={() =>
-            document
-              .getElementById('available-food')
-              ?.scrollIntoView({ behavior: 'smooth' })
-          }
-        >
-          View Available Food
-        </button>
-
-      </div>
-
-
-      {/* Statistics */}
-
-      <div className="dashboard-stats">
-
-        <div className="dashboard-stat-card">
-
-          <div className="stat-icon">
-            🍱
+        <div className="fc-sidebar-bottom">
+          <div className="fc-side-help">
+            <strong>Making a difference</strong>
+            <p>Every successful request helps connect food with people in need.</p>
+            <Link to="/about">Our mission →</Link>
           </div>
 
+          <button
+            className="fc-side-link"
+            onClick={() => {
+              localStorage.removeItem('foodconnectRole')
+              window.location.href = '/'
+            }}
+          >
+            <span>↪</span> Logout
+          </button>
+        </div>
+      </aside>
+
+      <main className="fc-dashboard-main">
+        <header className="fc-dash-topbar">
           <div>
-            <span>Available Donations</span>
-            <h2>{availableFood.length}</h2>
+            <span className="fc-eyebrow">COMMUNITY PARTNER</span>
+            <h1>NGO Dashboard</h1>
+            <p>Discover surplus food and help nourish your community.</p>
           </div>
 
-        </div>
-
-
-        <div className="dashboard-stat-card">
-
-          <div className="stat-icon">
-            📋
-          </div>
-
-          <div>
-            <span>My Requests</span>
-            <h2>{requests.length}</h2>
-          </div>
-
-        </div>
-
-
-        <div className="dashboard-stat-card">
-
-          <div className="stat-icon">
-            ❤️
-          </div>
-
-          <div>
-            <span>People Served</span>
-            <h2>60</h2>
-          </div>
-
-        </div>
-
-
-        <div className="dashboard-stat-card">
-
-          <div className="stat-icon">
-            ♻️
-          </div>
-
-          <div>
-            <span>Food Received</span>
-            <h2>15 kg</h2>
-          </div>
-
-        </div>
-
-      </div>
-
-
-      {/* Available Food */}
-
-      <div
-        className="dashboard-card"
-        id="available-food"
-      >
-
-        <div className="card-heading">
-
-          <div>
-            <h2>Available Food</h2>
-
-            <p>
-              Food donations currently available from restaurants.
-            </p>
-          </div>
-
-          <span className="donation-count">
-            {availableFood.length} Available
-          </span>
-
-        </div>
-
-
-        <div className="ngo-food-grid">
-
-          {availableFood.map((food) => {
-
-            const requested = requests.some(
-              (request) => request.foodId === food.id
-            )
-
-            return (
-              <div
-                className="ngo-food-card"
-                key={food.id}
-              >
-
-                <div className="ngo-food-top">
-
-                  <div className="ngo-food-icon">
-                    🍱
-                  </div>
-
-                  <span className="food-available">
-                    Available
-                  </span>
-
-                </div>
-
-
-                <h3>
-                  {food.foodName}
-                </h3>
-
-                <p className="food-type">
-                  {food.foodType}
-                </p>
-
-
-                <div className="ngo-food-details">
-
-                  <div>
-                    <span>Quantity</span>
-
-                    <strong>
-                      {food.quantity} {food.unit}
-                    </strong>
-                  </div>
-
-                  <div>
-                    <span>Expires</span>
-
-                    <strong>
-                      {food.expiry}
-                    </strong>
-                  </div>
-
-                </div>
-
-
-                <div className="ngo-food-restaurant">
-
-                  <span>Restaurant</span>
-
-                  <strong>
-                    🏪 {food.restaurant}
-                  </strong>
-
-                  <small>
-                    📍 {food.location}
-                  </small>
-
-                </div>
-
-
-                <button
-                  className={
-                    requested
-                      ? 'ngo-request-button requested'
-                      : 'ngo-request-button'
-                  }
-                  onClick={() => handleRequest(food)}
-                  disabled={requested}
-                >
-                  {requested
-                    ? '✓ Request Sent'
-                    : 'Request Food →'}
-                </button>
-
-              </div>
-            )
-
-          })}
-
-        </div>
-
-      </div>
-
-
-      {/* My Requests */}
-
-      <div className="dashboard-card">
-
-        <div className="card-heading">
-
-          <div>
-            <h2>My Requests</h2>
-
-            <p>
-              Track the food donations requested by your NGO.
-            </p>
-          </div>
-
-        </div>
-
-
-        {requests.length === 0 ? (
-
-          <div className="empty-state">
-
-            <div className="empty-icon">
-              📋
+          <div className="fc-dash-user">
+            <span className="fc-user-avatar">N</span>
+            <div>
+              <strong>NGO Partner</strong>
+              <span>Food recipient</span>
             </div>
+          </div>
+        </header>
 
-            <h3>
-              No requests yet
-            </h3>
-
-            <p>
-              Your food requests will appear here.
-            </p>
-
+        {notice && (
+          <div className="fc-notice" role="status">
+            <span>{notice}</span>
             <button
-              className="empty-button"
-              onClick={() =>
-                document
-                  .getElementById('available-food')
-                  ?.scrollIntoView({ behavior: 'smooth' })
-              }
+              onClick={() => setNotice('')}
+              aria-label="Dismiss message"
             >
-              Browse Available Food
+              ×
             </button>
-
           </div>
-
-        ) : (
-
-          <div className="ngo-request-list">
-
-            {requests.map((request) => (
-
-              <div
-                className="ngo-request-item"
-                key={request.id}
-              >
-
-                <div className="ngo-request-icon">
-                  🍱
-                </div>
-
-
-                <div className="ngo-request-info">
-
-                  <h3>
-                    {request.foodName}
-                  </h3>
-
-                  <p>
-                    {request.quantity} {request.unit}
-                    {' • '}
-                    {request.restaurant}
-                  </p>
-
-                </div>
-
-
-                <span className="ngo-request-status">
-                  {request.status}
-                </span>
-
-              </div>
-
-            ))}
-
-          </div>
-
         )}
 
-      </div>
+        <section className="fc-dash-stats">
+          <article className="fc-dash-stat">
+            <span className="fc-stat-icon">▤</span>
+            <span className="fc-stat-label">Available Listings</span>
+            <strong>{availableFood.length}</strong>
+            <span className="fc-stat-caption">Sample food listings</span>
+          </article>
 
+          <article className="fc-dash-stat">
+            <span className="fc-stat-icon">↗</span>
+            <span className="fc-stat-label">My Requests</span>
+            <strong>{requests.length}</strong>
+            <span className="fc-stat-caption">Requests submitted</span>
+          </article>
 
-      {/* NGO Journey */}
+          <article className="fc-dash-stat">
+            <span className="fc-stat-icon">♡</span>
+            <span className="fc-stat-label">People Served</span>
+            <strong>—</strong>
+            <span className="fc-stat-caption">Available after delivery tracking</span>
+          </article>
+        </section>
 
-      <div className="dashboard-card journey-card">
+        <section className="fc-dash-panel">
+          <div className="fc-panel-heading">
+            <div>
+              <span className="fc-eyebrow">FOOD RESCUE NETWORK</span>
+              <h2>
+                {activeTab === 'available'
+                  ? 'Available Food'
+                  : 'My Food Requests'}
+              </h2>
+              <p>
+                {activeTab === 'available'
+                  ? 'Browse surplus food shared by restaurant partners.'
+                  : 'Review the food requests you have submitted.'}
+              </p>
+            </div>
 
-        <div className="card-heading">
+            <div className="fc-ngo-tabs">
+              <button
+                className={activeTab === 'available' ? 'selected' : ''}
+                onClick={() => setActiveTab('available')}
+              >
+                Available Food
+              </button>
+              <button
+                className={activeTab === 'requests' ? 'selected' : ''}
+                onClick={() => setActiveTab('requests')}
+              >
+                My Requests ({requests.length})
+              </button>
+            </div>
+          </div>
 
+          {activeTab === 'available' ? (
+            <div className="fc-ngo-food-grid">
+              {availableFood.map((food) => {
+                const requested = requests.some(
+                  (request) => request.foodId === food.id
+                )
+
+                return (
+                  <article className="fc-ngo-food-card" key={food.id}>
+                    <div className="fc-ngo-food-photo">
+                      <img src={food.image} alt={food.name} loading="lazy" />
+                      <span className="fc-status">
+                        <span /> Available
+                      </span>
+                    </div>
+
+                    <div className="fc-ngo-food-content">
+                      <span className="fc-ngo-food-type">{food.type}</span>
+                      <h3>{food.name}</h3>
+                      <p className="fc-ngo-restaurant">{food.restaurant}</p>
+
+                      <div className="fc-ngo-food-detail">
+                        <span>Quantity</span>
+                        <strong>{food.quantity}</strong>
+                      </div>
+
+                      <div className="fc-ngo-food-detail">
+                        <span>Pickup location</span>
+                        <strong>{food.location}</strong>
+                      </div>
+
+                      <div className="fc-ngo-food-detail">
+                        <span>Best before</span>
+                        <strong>{food.expiry}</strong>
+                      </div>
+
+                      <button
+                        className={`fc-button ${requested ? 'fc-requested-button' : 'fc-button-primary'} fc-ngo-request-button`}
+                        disabled={requested}
+                        onClick={() => handleRequest(food)}
+                      >
+                        {requested ? 'Request Submitted ✓' : 'Request Food →'}
+                      </button>
+                    </div>
+                  </article>
+                )
+              })}
+            </div>
+          ) : requests.length === 0 ? (
+            <div className="fc-ngo-empty">
+              <span>▤</span>
+              <h3>No requests yet</h3>
+              <p>Browse available food and submit your first request.</p>
+              <button
+                className="fc-button fc-button-primary"
+                onClick={() => setActiveTab('available')}
+              >
+                Browse Food
+              </button>
+            </div>
+          ) : (
+            <div className="fc-table-scroll">
+              <table className="fc-data-table">
+                <thead>
+                  <tr>
+                    <th>Food Item</th>
+                    <th>Restaurant</th>
+                    <th>Quantity</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {requests.map((request) => (
+                    <tr key={request.id}>
+                      <td><strong>{request.foodName}</strong></td>
+                      <td>{request.restaurant}</td>
+                      <td>{request.quantity}</td>
+                      <td>
+                        <span className="fc-table-status fc-status-requested">
+                          {request.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+
+        <section className="fc-dashboard-photo" id="ngo-impact">
+          <img
+            src="https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1200&q=85"
+            alt="Community food donation volunteers"
+            loading="lazy"
+          />
           <div>
-            <h2>Food Recovery Journey</h2>
-
-            <p>
-              See how requested food reaches your NGO.
-            </p>
+            <span className="fc-eyebrow">COMMUNITY IMPACT</span>
+            <h2>More food shared. More people supported.</h2>
+            <p>Every coordinated donation is a step towards reducing food waste.</p>
           </div>
+        </section>
 
-        </div>
+        <section className="fc-profile-panel" id="ngo-profile">
+          <h2>NGO Profile</h2>
+          <p>
+            Your organization details will be displayed here after backend
+            integration. These requests currently exist only in frontend state.
+          </p>
+        </section>
 
-
-        <div className="journey">
-
-          <div className="journey-step active">
-
-            <div className="journey-number">
-              1
-            </div>
-
-            <h3>Find Food</h3>
-
-            <p>
-              Browse donations
-            </p>
-
-          </div>
-
-
-          <div className="journey-line"></div>
-
-
-          <div className="journey-step">
-
-            <div className="journey-number">
-              2
-            </div>
-
-            <h3>Request</h3>
-
-            <p>
-              Request food
-            </p>
-
-          </div>
-
-
-          <div className="journey-line"></div>
-
-
-          <div className="journey-step">
-
-            <div className="journey-number">
-              3
-            </div>
-
-            <h3>Pickup</h3>
-
-            <p>
-              Volunteer collects
-            </p>
-
-          </div>
-
-
-          <div className="journey-line"></div>
-
-
-          <div className="journey-step">
-
-            <div className="journey-number">
-              4
-            </div>
-
-            <h3>Receive</h3>
-
-            <p>
-              Food reaches NGO
-            </p>
-
-          </div>
-
-        </div>
-
-      </div>
-
+        <footer className="fc-dash-footer">
+          FoodConnect · Connecting food donors with communities.
+        </footer>
+      </main>
     </div>
   )
 }
 
 export default NGODashboard
+

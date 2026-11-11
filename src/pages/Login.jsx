@@ -1,262 +1,129 @@
+
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 function Login() {
-  const [role, setRole] = useState('')
+  const navigate = useNavigate()
+  const [role, setRole] = useState('restaurant')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
 
-  const navigate = useNavigate()
-
-  const handleLogin = (e) => {
-  e.preventDefault()
-
-  if (!role) {
-    alert('Please select your role.')
-    return
+  const roleRoutes = {
+    restaurant: '/restaurant',
+    ngo: '/ngo',
+    volunteer: '/volunteer',
+    admin: '/admin',
   }
 
-  if (!email || !password) {
-    alert('Please enter your email and password.')
-    return
-  }
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    setError('')
 
-  // Save the selected role for the frontend demo
-  localStorage.setItem('foodconnectRole', role)
+    if (!email.trim() || !password.trim()) {
+      setError('Please enter your email and password.')
+      return
+    }
 
-  if (role === 'restaurant') {
-    navigate('/restaurant')
-  } else if (role === 'ngo') {
-    navigate('/ngo')
-  } else if (role === 'volunteer') {
-    navigate('/volunteer')
+    // Demo-only login: this does not verify real credentials.
+    localStorage.setItem('foodconnectRole', role)
+    navigate(roleRoutes[role])
   }
-}
 
   return (
-    <div className="auth-page">
+    <main className="fc-auth-page">
+      <section className="fc-auth-visual">
+        <Link to="/" className="fc-auth-brand">
+          <span className="fc-auth-brand-icon">FC</span>
+          FoodConnect
+        </Link>
 
-      <div className="auth-container">
-
-        {/* Left Side */}
-
-        <div className="auth-info">
-
-          <div className="auth-logo">
-            Food<span>Connect</span>
-          </div>
-
-          <span className="auth-label">
-            WELCOME BACK
-          </span>
-
-          <h1>
-            Continue your
-            <br />
-            <span>impact journey.</span>
-          </h1>
-
+        <div className="fc-auth-visual-content">
+          <span className="fc-auth-eyebrow">LESS WASTE. MORE CARE.</span>
+          <h1>Good food deserves a second chance.</h1>
           <p>
-            Log in to manage your donations, requests, pickups
-            and food distribution through FoodConnect.
+            Connect surplus food with the people who need it. Every donation
+            can help build a more caring community.
           </p>
-
-          <div className="auth-points">
-
-            <div>
-              <span>✓</span>
-              Manage your activity
-            </div>
-
-            <div>
-              <span>✓</span>
-              Track food donations
-            </div>
-
-            <div>
-              <span>✓</span>
-              Stay connected with your community
-            </div>
-
-          </div>
-
         </div>
 
+        <div className="fc-auth-visual-footer">
+          Sharing food. Sharing hope.
+        </div>
+      </section>
 
-        {/* Login Card */}
+      <section className="fc-auth-form-section">
+        <div className="fc-auth-form-wrap">
+          <Link to="/" className="fc-auth-mobile-brand">
+            <span className="fc-auth-brand-icon">FC</span>
+            FoodConnect
+          </Link>
 
-        <div className="auth-card">
+          <span className="fc-auth-eyebrow">WELCOME BACK</span>
+          <h2>Log in to FoodConnect</h2>
+          <p className="fc-auth-subtitle">
+            Choose your role to open your workspace.
+          </p>
 
-          <div className="auth-card-heading">
-
-            <h2>Welcome back</h2>
-
-            <p>
-              Log in to your FoodConnect account.
-            </p>
-
-          </div>
-
-
-          {/* Role Selection */}
-
-          <div className="form-group">
-
-            <label>
-              Login as
-            </label>
-
-            <div className="role-options">
-
-              <button
-                type="button"
-                className={
-                  role === 'restaurant'
-                    ? 'role-option active'
-                    : 'role-option'
-                }
-                onClick={() => setRole('restaurant')}
-              >
-                <span>🏪</span>
-
-                <strong>
-                  Restaurant
-                </strong>
-
-                <small>
-                  Manage donations
-                </small>
-              </button>
-
-
-              <button
-                type="button"
-                className={
-                  role === 'ngo'
-                    ? 'role-option active'
-                    : 'role-option'
-                }
-                onClick={() => setRole('ngo')}
-              >
-                <span>🤝</span>
-
-                <strong>
-                  NGO
-                </strong>
-
-                <small>
-                  Manage requests
-                </small>
-              </button>
-
-
-              <button
-                type="button"
-                className={
-                  role === 'volunteer'
-                    ? 'role-option active'
-                    : 'role-option'
-                }
-                onClick={() => setRole('volunteer')}
-              >
-                <span>🚚</span>
-
-                <strong>
-                  Volunteer
-                </strong>
-
-                <small>
-                  Manage deliveries
-                </small>
-              </button>
-
-            </div>
-
-          </div>
-
-
-          {/* Login Form */}
-
-          <form onSubmit={handleLogin}>
-
-            <div className="form-group">
-
-              <label>
-                Email Address
-              </label>
-
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-              />
-
-            </div>
-
-
-            <div className="form-group">
-
-              <label>
-                Password
-              </label>
-
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-              />
-
-            </div>
-
-
-            <div className="login-options">
-
-              <label className="remember-me">
-
-                <input type="checkbox" />
-
-                <span>
-                  Remember me
-                </span>
-
-              </label>
-
-              <a href="#">
-                Forgot password?
-              </a>
-
-            </div>
-
-
-            <button
-              type="submit"
-              className="auth-submit"
-              disabled={!role}
+          <form className="fc-auth-form" onSubmit={handleSubmit}>
+            <label htmlFor="login-role">I am logging in as</label>
+            <select
+              id="login-role"
+              value={role}
+              onChange={(event) => setRole(event.target.value)}
             >
-              Login →
-            </button>
+              <option value="restaurant">Restaurant / Food Donor</option>
+              <option value="ngo">NGO</option>
+              <option value="volunteer">Volunteer</option>
+              <option value="admin">Administrator (Demo)</option>
+            </select>
 
+            <label htmlFor="login-email">Email address</label>
+            <input
+              id="login-email"
+              type="email"
+              placeholder="you@example.com"
+              autoComplete="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+            />
+
+            <label htmlFor="login-password">Password</label>
+            <input
+              id="login-password"
+              type="password"
+              placeholder="Enter any demo password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+            />
+
+            {error && (
+              <p className="fc-auth-error" role="alert">
+                {error}
+              </p>
+            )}
+
+            <button className="fc-auth-submit" type="submit">
+              Log In →
+            </button>
           </form>
 
-
-          <p className="auth-switch">
-
-            Don't have an account?{' '}
-
-            <a href="/register">
-              Create one
-            </a>
-
+          <p className="fc-auth-switch">
+            New to FoodConnect? <Link to="/register">Get Started</Link>
           </p>
 
+          <p className="fc-auth-demo-note">
+            College project demo: any non-empty email and password will work.
+            This page does not authenticate users or protect the admin route.
+          </p>
         </div>
-
-      </div>
-
-    </div>
+      </section>
+    </main>
   )
 }
 
 export default Login
+

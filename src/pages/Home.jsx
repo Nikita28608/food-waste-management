@@ -1,396 +1,205 @@
-import { Link, useNavigate } from 'react-router-dom'
+
+import { Link } from 'react-router-dom'
 
 function Home() {
-    const navigate = useNavigate()
   return (
-    <div className="home">
-
-      {/* HERO SECTION */}
-      <section className="hero">
-
-        <div className="hero-content">
-
-          <div className="hero-badge">
-            🌱 Building a world with less food waste
-          </div>
+    <main className="fc-home">
+      <section className="fc-home-hero">
+        <div className="fc-home-hero-content">
+          <span className="fc-home-eyebrow">
+            LESS FOOD WASTE. MORE HUMANITY.
+          </span>
 
           <h1>
-            Turn Surplus Food
-            <br />
-            Into <span>Hope.</span>
+            Good food should feed people,
+            <span> not fill landfills.</span>
           </h1>
 
           <p>
-            FoodConnect connects restaurants, NGOs and volunteers
-            to make sure surplus food reaches people who need it
-            instead of going to waste.
+            FoodConnect brings restaurants, NGOs, and volunteers
+            together to rescue surplus food and deliver it to
+            communities that need it.
           </p>
 
-          <div className="hero-buttons">
-            <button
-              className="hero-button"
-              onClick={() => navigate('/register')}>
-              Donate Food
-            </button>
+          <div className="fc-home-actions">
+            <Link to="/register" className="fc-home-primary">
+              Start Donating <span>→</span>
+            </Link>
 
-            <button
-              className="hero-button secondary"
-              onClick={() => navigate('/about')}
-            >
-              Learn How It Works
-            </button>
+            <Link to="/about" className="fc-home-secondary">
+              Discover Our Mission
+            </Link>
           </div>
 
-          <div className="hero-trust">
-            <span>✓ Easy to use</span>
-            <span>✓ Transparent tracking</span>
-            <span>✓ Community driven</span>
+          <div className="fc-home-trust">
+            <span className="fc-home-trust-icon">♥</span>
+            <span>Every meal saved is an opportunity to help.</span>
           </div>
-
         </div>
 
+        <div className="fc-home-hero-image">
+          <img
+            src="https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&q=85"
+            alt="A fresh, colourful meal ready to be shared"
+          />
 
-        {/* HERO CARD */}
-
-        <div className="hero-visual">
-
-          <div className="food-card">
-
-            <div className="food-card-top">
-              <span className="live-dot"></span>
-              Live Donation
+          <div className="fc-home-image-card">
+            <span className="fc-home-image-card-icon">♡</span>
+            <div>
+              <strong>Food with a purpose</strong>
+              <p>Share what you can. Help who you can.</p>
             </div>
-
-            <div className="food-icon">
-              🍱
-            </div>
-
-            <h3>
-              Fresh Meals Available
-            </h3>
-
-            <p>
-              50 food packets ready for pickup
-            </p>
-
-            <div className="food-details">
-
-              <div>
-                <span>Restaurant</span>
-                <strong>Food Palace</strong>
-              </div>
-
-              <div>
-                <span>Location</span>
-                <strong>Jaipur</strong>
-              </div>
-
-            </div>
-
-            <button className="pickup-button">
-              View Donation
-            </button>
-
           </div>
-
-          <div className="floating-card floating-card-one">
-            ❤️ 60+ People Served
-          </div>
-
-          <div className="floating-card floating-card-two">
-            🚚 Pickup Assigned
-          </div>
-
         </div>
-
       </section>
 
-
-      {/* IMPACT SECTION */}
-
-      <section className="impact">
-
-        <div className="impact-heading">
-          <span>OUR IMPACT</span>
-
-          <h2>
-            Small actions. <br />
-            <strong>Big impact.</strong>
-          </h2>
-        </div>
-
-        <div className="impact-stats">
-
-          <div className="impact-stat">
-            <h3>0+</h3>
-            <p>Food Donations</p>
-          </div>
-
-          <div className="impact-stat">
-            <h3>0+</h3>
-            <p>NGOs Connected</p>
-          </div>
-
-          <div className="impact-stat">
-            <h3>0+</h3>
-            <p>Volunteers</p>
-          </div>
-
-          <div className="impact-stat">
-            <h3>0+</h3>
-            <p>People Served</p>
-          </div>
-
-        </div>
-
-      </section>
-
-
-      {/* HOW IT WORKS */}
-
-      <section className="how-it-works">
-
-        <div className="section-heading">
-
-          <span>HOW IT WORKS</span>
-
-          <h2>
-            From excess food to
-            <br />
-            <strong>someone's meal.</strong>
-          </h2>
-
+      
+      
+      {/* FoodConnect Photo Gallery */}
+      <section className="fc-home-gallery">
+        <div className="fc-home-gallery-heading">
+          <span className="fc-home-eyebrow">FOOD WITH A PURPOSE</span>
+          <h2>See how sharing makes a difference.</h2>
           <p>
-            FoodConnect makes the entire journey simple,
-            transparent and trackable.
+            From preparing surplus meals to delivering food to communities,
+            every step helps turn extra food into meaningful support.
           </p>
-
         </div>
 
-
-        <div className="steps">
-
-          <div className="step">
-
-            <div className="step-number">
-              01
+        <div className="fc-home-gallery-grid">
+          <article className="fc-home-gallery-card fc-gallery-large">
+            <img
+              src="/images/food-meals.jpg"
+              alt="Fresh meals prepared for food donation"
+              loading="lazy"
+            />
+            <div className="fc-home-gallery-overlay">
+              <span>01 / FOOD RESCUE</span>
+              <h3>Every meal deserves a chance.</h3>
             </div>
+          </article>
 
-            <div className="step-icon">
-              🏪
+          <article className="fc-home-gallery-card">
+            <img
+              src="/images/children-food.png"
+              alt="Children receiving nutritious meals"
+              loading="lazy"
+            />
+            <div className="fc-home-gallery-overlay">
+              <span>02 / NOURISHMENT</span>
+              <h3>Every child deserves a meal.</h3>
             </div>
+          </article>
 
-            <h3>
-              Restaurant
-            </h3>
-
-            <p>
-              Restaurants list their safe surplus food
-              on FoodConnect.
-            </p>
-
-          </div>
-
-
-          <div className="step">
-
-            <div className="step-number">
-              02
+          <article className="fc-home-gallery-card">
+            <img
+              src="/images/food-distribution.webp"
+              alt="Community members receiving donated food"
+              loading="lazy"
+            />
+            <div className="fc-home-gallery-overlay">
+              <span>03 / COMMUNITY</span>
+              <h3>Sharing food, spreading care.</h3>
             </div>
+          </article>
 
-            <div className="step-icon">
-              🤝
+          <article className="fc-home-gallery-card">
+            <img
+              src="/images/food-packing.jpg"
+              alt="Volunteers packing food donations"
+              loading="lazy"
+            />
+            <div className="fc-home-gallery-overlay">
+              <span>04 / VOLUNTEERS</span>
+              <h3>Small actions, lasting impact.</h3>
             </div>
+          </article>
 
-            <h3>
-              NGO
-            </h3>
-
-            <p>
-              NGOs discover available food and
-              request the quantity they need.
-            </p>
-
-          </div>
-
-
-          <div className="step">
-
-            <div className="step-number">
-              03
+          <article className="fc-home-gallery-card">
+            <img
+              src="/images/volunteer-support.jpg"
+              alt="Volunteers distributing food to the community"
+              loading="lazy"
+            />
+            <div className="fc-home-gallery-overlay">
+              <span>05 / FOOD SUPPORT</span>
+              <h3>Together, we can make a difference.</h3>
             </div>
-
-            <div className="step-icon">
-              🚴
-            </div>
-
-            <h3>
-              Volunteer
-            </h3>
-
-            <p>
-              Volunteers collect the food and
-              transport it safely.
-            </p>
-
-          </div>
-
-
-          <div className="step">
-
-            <div className="step-number">
-              04
-            </div>
-
-            <div className="step-icon">
-              ❤️
-            </div>
-
-            <h3>
-              Distribution
-            </h3>
-
-            <p>
-              Food reaches communities and
-              people who need it.
-            </p>
-
-          </div>
-
+          </article>
         </div>
-
       </section>
 
-
-      {/* WHY FOODCONNECT */}
-
-      <section className="why-foodconnect">
-
-        <div className="why-content">
-
-          <span>WHY FOODCONNECT?</span>
-
-          <h2>
-            More than food.
-            <br />
-            <strong>It's a connection.</strong>
-          </h2>
-
-          <p>
-            FoodConnect creates a closed-loop system where
-            every donation can be tracked from the moment
-            it leaves a restaurant to the moment it reaches
-            someone in need.
-          </p>
-
-        </div>
-
-
-        <div className="features">
-
-          <div className="feature">
-            <div className="feature-icon">📊</div>
-            <h3>Transparent Tracking</h3>
-            <p>
-              Track donations from pickup to final distribution.
-            </p>
-          </div>
-
-          <div className="feature">
-            <div className="feature-icon">⚡</div>
-            <h3>Fast Coordination</h3>
-            <p>
-              Connect NGOs and volunteers with available food quickly.
-            </p>
-          </div>
-
-          <div className="feature">
-            <div className="feature-icon">🌍</div>
-            <h3>Real Social Impact</h3>
-            <p>
-              Reduce food waste while helping communities.
-            </p>
-          </div>
-
-          <div className="feature">
-            <div className="feature-icon">🔒</div>
-            <h3>Reliable Records</h3>
-            <p>
-              Maintain organized records of donations and distributions.
-            </p>
-          </div>
-
-        </div>
-
-      </section>
-
-
-      {/* CTA */}
-
-      <section className="cta">
-
+      {/* How FoodConnect Works */}
+      <section className="fc-home-impact" id="how-it-works">
         <div>
-
-          <span>MAKE A DIFFERENCE</span>
-
-          <h2>
-            Have extra food?
-            <br />
-            Someone may need it.
-          </h2>
-
+          <span className="fc-home-impact-label">OUR PURPOSE</span>
+          <h2>Turning surplus into support.</h2>
           <p>
-            Join FoodConnect and turn surplus food
-            into meaningful impact.
+            A simple connection can make a meaningful difference
+            for people, communities, and the planet.
           </p>
-
         </div>
 
-        <button
-  className="cta-button"
-  onClick={() => navigate('/register')}
->
-  Get Started
-</button>
+        <div className="fc-home-impact-cards">
+          <article className="fc-home-impact-card">
+            <span className="fc-home-impact-number">01</span>
+            <div className="fc-home-impact-icon">🍲</div>
+            <h3>Rescue food</h3>
+            <p>
+              Food donors list safe surplus food before it goes
+              to waste.
+            </p>
+          </article>
 
+          <article className="fc-home-impact-card">
+            <span className="fc-home-impact-number">02</span>
+            <div className="fc-home-impact-icon">🤝</div>
+            <h3>Connect communities</h3>
+            <p>
+              NGOs request available donations for the people
+              they support.
+            </p>
+          </article>
+
+          <article className="fc-home-impact-card">
+            <span className="fc-home-impact-number">03</span>
+            <div className="fc-home-impact-icon">🚚</div>
+            <h3>Deliver with care</h3>
+            <p>
+              Volunteers help coordinate collection and delivery
+              to recipients.
+            </p>
+          </article>
+        </div>
       </section>
 
 
-      {/* FOOTER */}
 
-      <footer className="footer">
-
-        <div className="footer-brand">
-
-          <h2>
-            Food<span>Connect</span>
-          </h2>
-
+      <section className="fc-home-cta">
+        <div>
+          <span className="fc-home-eyebrow">BE PART OF THE CHANGE</span>
+          <h2>Have extra food? Someone could need it.</h2>
           <p>
-            Connecting surplus food with people who need it.
+            Join FoodConnect and help make surplus food useful
+            again.
           </p>
-
         </div>
 
-        <div className="footer-links">
-          <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
-          <Link to="/login">Login</Link>
-          <Link to="/register">Register</Link>
-        </div>
+        <Link to="/register" className="fc-home-cta-button">
+          Join FoodConnect →
+        </Link>
+      </section>
 
-        <div className="footer-bottom">
-
-          <p>
-            © 2026 FoodConnect. Built to reduce food waste.
-          </p>
-
-        </div>
-
+      <footer className="fc-home-footer">
+        <Link to="/" className="fc-home-footer-brand">
+          FoodConnect
+        </Link>
+        <p>Connecting surplus food with people who need it.</p>
+        <Link to="/about">Learn about our mission</Link>
       </footer>
-
-    </div>
+    </main>
   )
 }
 
 export default Home
+
